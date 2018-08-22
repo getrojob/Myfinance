@@ -1,0 +1,46 @@
+﻿@model PlanoContaModel
+@{
+    var vId = "";
+    var vDescricao = "";
+    var vTipo = 0;
+
+    try
+    {
+        vId = int.Parse(@ViewBag.Registro.Id.ToString());
+        vDescricao = @ViewBag.Registro.Descricao.ToString();
+        vTipo = @ViewBag.Registro.Tipo.ToString();
+    }
+    catch { }
+}
+
+
+<h3>Criar Plano de Contas</h3>
+<form asp-controller="PlanoConta" asp-action="CriarPlanoConta">
+    <input type="hidden" asp-for="Id" value="@vId"/>
+
+    <div class="form-group">
+        <label for="descricao">Descrição:</label>
+        <input type="text" class="form-control" asp-for="Descricao" value="@vDescricao">
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="tipo">Tipo:</label>
+
+        @{
+            if (vTipo == "R")
+            {
+                <div class="radio"><label><input type="radio" asp-for="Tipo" value="R" checked>Receita</label></div>
+                <div class="radio"><label for="despesa"><input type="radio" class="form-inline" asp-for="Tipo" value="D" unchecked>Despesa</label></div>
+            }
+            else
+            {
+                <div class="radio"><label><input type="radio" asp-for="Tipo" value="R" unchecked>Receita</label></div>
+                <div class="radio"><label for="despesa"><input type="radio" class="form-inline" asp-for="Tipo" value="D" checked>Despesa</label></div>
+            }
+        }
+
+
+    </div>
+    <button type="submit" class="btn btn-block btn-success" onclick="CriarPlanoConta()">Criar Plano de Conta</button>
+</form>

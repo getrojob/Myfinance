@@ -14,9 +14,9 @@ namespace MyFinance.Controllers
         public IActionResult Login(int? id)
         {
 
-            if(id != null)
+            if (id != null)
             {
-                if(id == 0)
+                if (id == 0)
                 {
                     HttpContext.Session.SetString("IdUsuarioLogado", string.Empty);
                     HttpContext.Session.SetString("NomeUsuarioLogado", string.Empty);
@@ -33,7 +33,7 @@ namespace MyFinance.Controllers
             {
                 HttpContext.Session.SetString("NomeUsuarioLogado", usuario.Nome);
                 HttpContext.Session.SetString("IdUsuarioLogado", usuario.Id.ToString());
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Menu", "Home");
             }
             else
             {
@@ -41,5 +41,30 @@ namespace MyFinance.Controllers
                 return RedirectToAction("Login");
             }
         }
+
+        [HttpPost]
+        public IActionResult Registrar(UsuarioModel usuario)
+        {
+            if (ModelState.IsValid)
+            {
+
+                usuario.RegistrarUsuario();
+                return RedirectToAction("Sucesso");
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Registrar()
+        {
+            return View();
+        }
+
+        public IActionResult Sucesso()
+        {
+            return View();
+        }
+
+
     }
 }
