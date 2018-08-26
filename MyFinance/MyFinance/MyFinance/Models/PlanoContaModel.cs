@@ -13,7 +13,7 @@ namespace MyFinance.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Informe a Descrção!")]
+        [Required(ErrorMessage = "Informe a Descrição!")]
         public string Descricao { get; set; }
 
         public string Tipo { get; set; }
@@ -63,7 +63,7 @@ namespace MyFinance.Models
             PlanoContaModel item = new PlanoContaModel();
 
             string id_usuario_logado = HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
-            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTA WHERE USUARIO_ID = {id_usuario_logado} AND ID = {id}";
+            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTAS WHERE USUARIO_ID = {id_usuario_logado} AND ID = {id}";
             DAL objDAL = new DAL();
             DataTable dt = objDAL.RetDataTable(sql);
 
@@ -89,21 +89,31 @@ namespace MyFinance.Models
             }
             else
             {
-                sql = $"update PLANO_CONTAS SET DESCRICAO = '{Descricao}', TIPO = '{Tipo}', USUARIO_ID ='{id_usuario_logado}' AND ID = '{Id}'";
+                sql = $"update PLANO_CONTAS SET DESCRICAO = '{Descricao}', TIPO = '{Tipo}' WHERE USUARIO_ID ='{id_usuario_logado}' AND ID = '{Id}'";
             }
-            
+
             DAL objDAL = new DAL();
             objDAL.ExecutarComandoSQL(sql);
         }
 
         public void Excluir(int id_conta)
         {
-            String sql = "DELETE FROM PLANO_CONTAS WHERE ID = " + id_conta;
-            DAL objDAL = new DAL();
+            try
+            {
+                String sql = "DELETE FROM PLANO_CONTAS WHERE ID = " + id_conta;
+                DAL objDAL = new DAL();
 
-            objDAL.ExecutarComandoSQL(sql);
+                objDAL.ExecutarComandoSQL(sql);
 
-            //new DAL().ExecutarComandoSQL("DELETE PLANO_CONTAS WHERE ID = "+ id_conta);
+                //new DAL().ExecutarComandoSQL("DELETE PLANO_CONTAS WHERE ID = "+ id_conta);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("---Registra Stack Trace para exceções----");
+                Console.WriteLine(ex.StackTrace.ToString());
+                Console.WriteLine("---Registra o nome do método na qual a exceção ocorreu---");
+                Console.WriteLine(ex.TargetSite.ToString());
+            }
         }
 
     }

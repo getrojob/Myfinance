@@ -1,8 +1,8 @@
 ﻿@model PlanoContaModel
 @{
-    var vId = "";
+    var vId = 0;
     var vDescricao = "";
-    var vTipo = 0;
+    var vTipo = "";
 
     try
     {
@@ -31,12 +31,12 @@
             if (vTipo == "R")
             {
                 <div class="radio"><label><input type="radio" asp-for="Tipo" value="R" checked>Receita</label></div>
-                <div class="radio"><label for="despesa"><input type="radio" class="form-inline" asp-for="Tipo" value="D" unchecked>Despesa</label></div>
+                <div class="radio"><label><input type="radio" asp-for="Tipo" value="D" unchecked>Despesa</label></div>
             }
             else
             {
                 <div class="radio"><label><input type="radio" asp-for="Tipo" value="R" unchecked>Receita</label></div>
-                <div class="radio"><label for="despesa"><input type="radio" class="form-inline" asp-for="Tipo" value="D" checked>Despesa</label></div>
+                <div class="radio"><label><input type="radio" asp-for="Tipo" value="D" checked>Despesa</label></div>
             }
         }
 

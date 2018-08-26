@@ -1,7 +1,86 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿<div id="top" class="row">
+    <div class="col-md-3">
+        <h3>Minhas Transações</h3>
+    </div>
 
-<h2>Index</h2>
+    <div class="col-md-6">
+        <div class="input-group h2">
+            <input name="data[search]" class="form-control" id="search" type="text" placeholder="Pesquisar Itens">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary pull-right h2" onclick="RegistrarTransacao()">Registrar Transação</button>
+    </div>
+</div> <!-- /#top -->
+<div id="list" class="row">
 
+    <div class="table-responsive col-md-12">
+        <table class="table table-hover" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Histórico</th>
+                    <th>Conta</th>
+                    <th>Plano e Contas</th>
+                    <th class="actions">Ações</th>
+                </tr>
+            </thead>
+            @{
+                foreach (var item in (List<TransacaoModel>)ViewBag.ListaTransacao)
+                {
+                    <tbody>
+                        <tr>
+                            <td>@item.Id.ToString()</td>
+                            <td>@DateTime.Parse(item.Data.ToString()).ToString("dd/MM/yyyy")</td>
+                            <td>@item.Tipo.ToString().Replace("R", "Receita").Replace("D", "Despesa")</td>
+                            <td>R$ @item.Valor.ToString()</td>
+                            <td>@item.Descricao.ToString()</td>
+                            <td>@item.NomeConta.ToString()</td>
+                            <td>@item.DescricaoPlanoConta.ToString()</td>
+
+                            
+                            <td class="actions">
+                                <a class="btn btn-warning btn-xs" onclick="Editar(@item.Id.ToString())">Editar</a>
+                                <a class="btn btn-danger btn-xs" onclick="Excluir(@item.Id.ToString())">Excluir</a>
+                               
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            }
+        </table>
+    </div>
+</div>
+<div id="bottom" class="row">
+    <div class="col-md-12">
+
+        <ul class="pagination">
+            <li class="disabled"><a>&lt; Anterior</a></li>
+            <li class="disabled"><a>1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li class="next"><a href="#" rel="next">Próximo &gt;</a></li>
+        </ul><!-- /.pagination -->
+
+    </div>
+</div> <!-- /#bottom -->
+
+<script>
+    function RegistrarTransacao() {
+        window.location.href = "../Transacao/Registrar";
+    }
+   function Excluir(id) {
+       window.location.href = "../Transacao/ExcluirTransacao/" + id;
+   }
+    function Editar(id) {
+        window.location.href = "../Transacao/Registrar/" + id;
+    }
+</script>

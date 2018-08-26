@@ -84,7 +84,7 @@ namespace MyFinance.Models
 
             objDAL.ExecutarComandoSQL(sql);
 
-            //new DAL().ExecutarComandoSQL("DELETE CONTA WHERE ID = "+ id_conta);
+            //new DAL().ExecutarComandoSQL("DELETE FROM CONTA WHERE ID = "+ id_conta);
 
 
         }
