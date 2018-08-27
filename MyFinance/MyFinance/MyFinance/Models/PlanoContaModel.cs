@@ -26,6 +26,10 @@ namespace MyFinance.Models
         {
 
         }
+        private string IdUsuarioLogado()
+        {
+            return HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
+        }
 
         //Recebe o contexto de acesso a variaveis de sessão
         public PlanoContaModel(IHttpContextAccessor httpContextAccessor)
@@ -38,9 +42,8 @@ namespace MyFinance.Models
         {
             List<PlanoContaModel> Lista = new List<PlanoContaModel>();
             PlanoContaModel item;
-
-            string id_usuario_logado = HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
-            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTAS WHERE USUARIO_ID = {id_usuario_logado}";
+            
+            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTAS WHERE USUARIO_ID = {IdUsuarioLogado()}";
             DAL objDAL = new DAL();
             DataTable dt = objDAL.RetDataTable(sql);
 
@@ -62,8 +65,7 @@ namespace MyFinance.Models
         {
             PlanoContaModel item = new PlanoContaModel();
 
-            string id_usuario_logado = HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
-            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTAS WHERE USUARIO_ID = {id_usuario_logado} AND ID = {id}";
+            string sql = $"SELECT ID, DESCRICAO, TIPO, USUARIO_ID FROM PLANO_CONTAS WHERE USUARIO_ID = {IdUsuarioLogado()} AND ID = {id}";
             DAL objDAL = new DAL();
             DataTable dt = objDAL.RetDataTable(sql);
 
@@ -80,16 +82,14 @@ namespace MyFinance.Models
         public void Insert()
         {
 
-            string id_usuario_logado = HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
-
             string sql = "";
             if (Id == 0)
             {
-                sql = $"INSERT INTO PLANO_CONTAS(DESCRICAO, TIPO, USUARIO_ID) VALUES ('{Descricao}','{Tipo}','{id_usuario_logado}')";
+                sql = $"INSERT INTO PLANO_CONTAS(DESCRICAO, TIPO, USUARIO_ID) VALUES ('{Descricao}','{Tipo}','{IdUsuarioLogado()}')";
             }
             else
             {
-                sql = $"update PLANO_CONTAS SET DESCRICAO = '{Descricao}', TIPO = '{Tipo}' WHERE USUARIO_ID ='{id_usuario_logado}' AND ID = '{Id}'";
+                sql = $"update PLANO_CONTAS SET DESCRICAO = '{Descricao}', TIPO = '{Tipo}' WHERE USUARIO_ID ='{IdUsuarioLogado()}' AND ID = '{Id}'";
             }
 
             DAL objDAL = new DAL();
