@@ -50,18 +50,52 @@ namespace MyFinance.Controllers
             return View();
         }
 
-        public IActionResult ExcluirTransacao()
+        [HttpGet]
+        public IActionResult ExcluirTransacao(int id)
         {
-
+            TransacaoModel objTransacao = new TransacaoModel(HttpContextAccessor);
+            ViewBag.Registro = objTransacao.CarregarRegistro(id);
             return View();
         }
 
-        public IActionResult Extrato()
+        [HttpGet]
+        public IActionResult Excluir(int id)
         {
+            TransacaoModel objTransacao = new TransacaoModel(HttpContextAccessor);
+            objTransacao.Excluir(id);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [HttpPost]
+        public IActionResult Extrato(TransacaoModel formulario)
+        {
+            formulario.HttpContextAccessor = HttpContextAccessor;
+            ViewBag.ListaTransacao = formulario.ListaTransacao();
+            ViewBag.ListaContas = new ContaModel(HttpContextAccessor).ListaConta();
             return View();
         }
+
         public IActionResult Dashboard()
         {
+
+            List<Dashboard> lista = new Dashboard().RetornarDadosGraficosPie();
+            string valores = "";
+            string labels = "";
+            string color = "";
+
+            var random = new Random();
+           
+
+            for (int i = 0; i < lista.Count; i++)
+            {
+                valores += lista[i].Total.ToString() + ",";
+                labels += "'" + lista[i].PlanoConta.ToString() + "',";
+                color += "'" + String.Format("#{0:X6}", random.Next(0x1000000)) + "',";
+            }
+            ViewBag.Valores = valores;
+            ViewBag.Labels = labels;
+            ViewBag.Cores = color;
             return View();
         }
     }

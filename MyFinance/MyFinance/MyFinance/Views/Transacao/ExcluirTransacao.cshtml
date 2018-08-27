@@ -2,19 +2,23 @@
 @{
     ViewData["Title"] = "ExcluirTransacao";
 }
-
 <h3>Deseja Excluir a transação selecionada?</h3>
+<p><strong>ID: </strong>@ViewBag.Registro.Id.ToString()</p>
+<p><strong>Data: </strong>@ViewBag.Registro.Data.ToString()</p>
+<p><strong>Registro: </strong>@ViewBag.Registro.Descricao.ToString()</p>
+<p><strong>Valor: </strong>@ViewBag.Registro.Valor.ToString()</p>
+
 
 <button type="button" onclick="Cancelar()" class="btn btn-block btn-default">Cancelar</button>
-<button type="button" onclick="Excluir()" class="btn btn-block btn-danger">Excluir</button>
+<button type="button" onclick="Excluir(@ViewBag.Registro.Id.ToString())" class="btn btn-block btn-danger">Excluir</button>
 
 <script>
     function Excluir(id)
     {
-        window.location.href = "../transacao/Excluir/" + id;
+        window.location.href = "../../transacao/Excluir/" + id;
     }
     function Cancelar()
     {
-        window.location.href = "../transacao/Index";
+        window.location.href = "../../transacao/Index";
     }
 </script>

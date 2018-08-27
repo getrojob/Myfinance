@@ -16,6 +16,8 @@ namespace MyFinance.Models
         [Required(ErrorMessage = "Informe a Data!")]
         public string Data { get; set; }
 
+        public string DataFinal { get; set; } //Utilizado para filtros
+
         public string Tipo { get; set; }
 
         public double Valor { get; set; }
@@ -47,13 +49,33 @@ namespace MyFinance.Models
             List<TransacaoModel> Lista = new List<TransacaoModel>();
             TransacaoModel item;
 
+            //Utilizado pela View Extrato
+            string filtro = "";
+            if ((Data != null) && (DataFinal != null))
+            {
+                filtro += $"and t.Data >='{DateTime.Parse(Data).ToString("yyyy/MM/dd")}' and t.Data <='{DateTime.Parse(DataFinal).ToString("yyyy/MM/dd")}'";
+            }
+
+            if (Tipo != null)
+            {
+                if (Tipo != "A")
+                {
+                    filtro += $" and t.Tipo ='{Tipo}'";
+                }
+            }
+            if (Conta_Id != 0)
+            {
+                filtro += $" and t.Conta_Id ='{Conta_Id}'";
+            }
+            //Fim
+
             string id_usuario_logado = HttpContextAccessor.HttpContext.Session.GetString("IdUsuarioLogado");
             string sql = "select t.Id, t.Data, t.Tipo, t.Valor, t.Descricao as historico," +
                         "t.Conta_Id, c.nome as conta, t.Plano_Contas_Id, p.Descricao as plano_conta" +
                         " from transacao as t inner join conta c" +
                         " on t.Conta_Id = c.Id inner join Plano_Contas as p " +
                         " on t.Plano_Contas_Id = p.Id" +
-                        $" where t.Usuario_Id = {id_usuario_logado} order by t.Data desc limit 10";
+                        $" where t.Usuario_Id = {id_usuario_logado} {filtro} order by t.Data desc limit 10";
             DAL objDAL = new DAL();
             DataTable dt = objDAL.RetDataTable(sql);
 
@@ -128,6 +150,38 @@ namespace MyFinance.Models
 
             DAL objDAL = new DAL();
             objDAL.ExecutarComandoSQL(sql);
+        }
+
+        public void Excluir(int id)
+        {
+            new DAL().ExecutarComandoSQL("DELETE FROM TRANSACAO WHERE ID = " + id);
+        }
+    }
+
+    public class Dashboard
+    {
+        public double Total { get; set; }
+        public string PlanoConta { get; set; }
+        public List<Dashboard> RetornarDadosGraficosPie()
+        {
+            List<Dashboard> lista = new List<Dashboard>();
+            Dashboard item;
+
+            string sql = "select sum(t.valor) as total, p.Descricao from transacao as t inner join plano_contas as p " +
+                            "on t.Plano_contas_Id = p.Id where t.Tipo = 'D' group by p.Descricao;";
+            DAL objDAL = new DAL();
+            DataTable dt = new DataTable();
+            dt = objDAL.RetDataTable(sql);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                item = new Dashboard();
+                item.Total = double.Parse(dt.Rows[i]["Total"].ToString());
+                item.PlanoConta = dt.Rows[i]["Descricao"].ToString();
+                lista.Add(item);
+            }
+
+            return lista;
         }
     }
 }

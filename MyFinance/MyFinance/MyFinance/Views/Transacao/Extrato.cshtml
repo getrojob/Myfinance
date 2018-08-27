@@ -1,7 +1,95 @@
-﻿
-@{
-    ViewData["Title"] = "Extrato";
-}
+﻿@model TransacaoModel
 
-<h2>Extrato</h2>
+<h2>Meu Extrato</h2>
 
+<div class="container">
+    <form asp-controller="Transacao" asp-action="Extrato">
+        <div class="form-group">
+            <label>Data transação (Inicio):</label>
+            <input type="date" asp-for="Data" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Data transação (Final):</label>
+            <input type="date" asp-for="DataFinal" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Tipo Transação:</label>
+            <div class="radio"><label><input type="radio" asp-for="Tipo" value="A" checked>Receita e Despesa</label></div>
+            <div class="radio"><label><input type="radio" asp-for="Tipo" value="R" unchecked>Receita</label></div>
+            <div class="radio"><label><input type="radio" asp-for="Tipo" value="D" unchecked>Despesa</label></div>
+        </div>
+        <div class="form-group">
+            <label>Conta:</label>
+            <select asp-for="Conta_Id" class="form-control">
+                @{
+                    foreach (var item in (List<ContaModel>)ViewBag.ListaContas)
+                    {
+                        <option selected value="@item.Id.ToString()">@item.Nome.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-block btn-success">Pesquisar</button>
+    </form>
+
+    <br />
+    <div id="list" class="row">
+
+        <div class="table-responsive col-md-12">
+            <table class="table table-hover" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Histórico</th>
+                        <th>Conta</th>
+                        <th>Plano e Contas</th>
+                        <th class="actions">Ações</th>
+                    </tr>
+                </thead>
+                @{
+                    var TotalReceitas = 0.0;
+                    var TotalDespesas = 0.0;
+                    var vSaldo = 0.0;
+                    foreach (var item in (List<TransacaoModel>)ViewBag.ListaTransacao)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>@item.Id.ToString()</td>
+                                <td>@DateTime.Parse(item.Data.ToString()).ToString("dd/MM/yyyy")</td>
+                                <td>@item.Tipo.ToString().Replace("R", "Receita").Replace("D", "Despesa")</td>
+                                <td>R$ @item.Valor.ToString()</td>
+                                <td>@item.Descricao.ToString()</td>
+                                <td>@item.NomeConta.ToString()</td>
+                                <td>@item.DescricaoPlanoConta.ToString()</td>
+                                <td class="actions">
+                                    <a class="btn btn-primary" onclick="Editar(@item.Id.ToString())">Editar</a>
+                                </td>
+                            </tr>
+                            @{
+                                if (item.Tipo == "D")
+                                {
+                                    TotalDespesas += double.Parse(item.Valor.ToString());
+                                }
+                                else
+                                {
+                                    TotalReceitas += double.Parse(item.Valor.ToString());
+                                }
+                            }
+                        </tbody>
+                    }
+                    vSaldo = TotalReceitas - TotalDespesas;
+                }
+            </table>
+            <h3><strong>Saldo:</strong>R$ vSaldo</h3>
+        </div>
+    </div>
+</div>
+<script>
+    function Editar(id) {
+        window.location.href = "../Transacao/Registrar/" + id;
+    }
+</script>

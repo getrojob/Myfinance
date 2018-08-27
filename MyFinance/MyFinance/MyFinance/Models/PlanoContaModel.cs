@@ -98,22 +98,13 @@ namespace MyFinance.Models
 
         public void Excluir(int id_conta)
         {
-            try
-            {
+            
                 String sql = "DELETE FROM PLANO_CONTAS WHERE ID = " + id_conta;
                 DAL objDAL = new DAL();
 
                 objDAL.ExecutarComandoSQL(sql);
 
                 //new DAL().ExecutarComandoSQL("DELETE PLANO_CONTAS WHERE ID = "+ id_conta);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("---Registra Stack Trace para exceções----");
-                Console.WriteLine(ex.StackTrace.ToString());
-                Console.WriteLine("---Registra o nome do método na qual a exceção ocorreu---");
-                Console.WriteLine(ex.TargetSite.ToString());
-            }
         }
 
     }
